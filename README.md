@@ -45,8 +45,8 @@ Example:
 ## Installation & Usage
 
 1. Clone the repository:
-   git clone [https://github.com/your-username/smart-greenhouse-sensor-processing.git](https://github.com/your-username/smart-greenhouse-sensor-processing.git)
-   cd smart-greenhouse-sensor-processing
+   git clone [https://github.com/your-username/greenhouse-sensor-project.git](https://github.com/your-username/greenhouse-sensor-project.git)
+   cd greenhouse-sensor-project
 2. Open the project in your preferred Java IDE.
 3. Run Examples.java to verify functionality.
 
