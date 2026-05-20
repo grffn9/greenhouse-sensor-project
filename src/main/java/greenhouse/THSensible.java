@@ -1,3 +1,4 @@
+package greenhouse;
 public interface THSensible {
 
     /** Split and store sensor data */

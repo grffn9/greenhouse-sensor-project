@@ -1,3 +1,4 @@
+package greenhouse;
 import java.util.*;
 import static java.util.Arrays.asList;
 
@@ -31,6 +32,7 @@ public abstract class THTemplate implements THSensible {
      * @param data sensor data
      */
     public void collect(String data) {
+        if (data == null) return;
         List<String> collection = asList(data.split(" "));
         sensorData.addAll(sensorData.size() , collection);
         postCollect();
@@ -106,7 +108,9 @@ public abstract class THTemplate implements THSensible {
      */
     protected void clean() {
         if (!this.sensorData.isEmpty()) {
-            this.sensorData.remove(0);
+            if (this.sensorData.get(0).matches("\\d{8}")) {
+                this.sensorData.remove(0);
+            }
             List<String> nonErr = new ArrayList<>();
             for (String item : this.sensorData) {
                 if (!Objects.equals(item, "Err")) {
@@ -123,16 +127,24 @@ public abstract class THTemplate implements THSensible {
      * clears sensorData
      */
     protected void parse() {
-        for(int i = 0; i < sensorData.size(); i++) {
-            if(sensorData.get(i).equals("T")) {
-                this.temperatures.add(Double.parseDouble(sensorData.get(i + 1)));
-            } else if(sensorData.get(i).equals("H")) {
-                this.humidities.add(Double.parseDouble(sensorData.get(i + 1)));
+        List<Double> tempTemps = new ArrayList<>(this.temperatures);
+        List<Double> tempHumids = new ArrayList<>(this.humidities);
+        try {
+            for(int i = 0; i < sensorData.size(); i++) {
+                if(sensorData.get(i).equals("T") && i + 1 < sensorData.size()) {
+                    tempTemps.add(Double.parseDouble(sensorData.get(i + 1)));
+                } else if(sensorData.get(i).equals("H") && i + 1 < sensorData.size()) {
+                    tempHumids.add(Double.parseDouble(sensorData.get(i + 1)));
+                }
             }
+            this.temperatures = tempTemps;
+            this.humidities = tempHumids;
+            Collections.sort(this.temperatures);
+            Collections.sort(this.humidities);
+            this.sensorData.clear();
+        } catch (NumberFormatException e) {
+            // Ignore malformed numeric data and preserve original state
         }
-        Collections.sort(this.temperatures);
-        Collections.sort(this.humidities);
-        this.sensorData.clear();
     }
 
     /**

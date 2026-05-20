@@ -1,3 +1,4 @@
+package greenhouse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,18 +51,29 @@ public class THRTPDate extends THRTP implements Comparable<THRTPDate> {
      * @param o another object
      * @return true if the two dates of each object are true
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof THRTPDate) {
-            return this.date.equals(((THRTPDate) o).date);
+            THRTPDate other = (THRTPDate) o;
+            if (this.date == null) return other.date == null;
+            return this.date.equals(other.date);
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.date != null ? this.date.hashCode() : 0;
     }
 
     /**
      * @param o the object to be compared.
      * @return what compareTo() on their date fields return
      */
+    @Override
     public int compareTo(THRTPDate o) {
+        if (o == null || o.date == null) return 1;
+        if (this.date == null) return -1;
         return this.date.compareTo(o.date);
     }
 }
