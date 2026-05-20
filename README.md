@@ -1,63 +1,35 @@
-# Smart Greenhouse Sensor Processing
+# Greenhouse Sensor Data Processor
 
-## Overview
+## Description
+This project processes and analyzes temperature and humidity data streams reported by greenhouse sensors. Sensor data is ingested as space-separated string batches (e.g., `"20250407 T 73.0 H 26.5 Err T 82.9"`), detecting dates, parameters, and sensor errors.
 
-This project implements a Java library for processing temperature and humidity data from smart greenhouse IoT sensors using the Template Method Design Pattern. It supports both Batch Processing and Real-Time Processing strategies, as well as specialized variants for date-restricted and error-auditing deployments. The architecture emphasizes code reuse through inheritance, with THTemplate handling most shared logic and subclasses customizing behavior.
+The system uses a Template Method architectural pattern (`THTemplate` implementing `THSensible`) to support two distinct data aggregation strategies:
+* **Batch Processing (`THBP`)**: Defers data parsing until an analytical query is made, optimizing for rapid, bursty data collection. Includes `THBPAuditor` to track data integrity by counting sensor errors.
+* **Real-Time Processing (`THRTP`)**: Parses data streams incrementally at the moment of collection, optimizing for fast, real-time read access. Includes `THRTPDate` for filtering datasets to specific target dates.
 
-## Features
+## Installation
+Ensure you have the Java Development Kit (JDK) 11 or higher installed.
+1. Clone this repository to your local machine.
+2. The project uses standard Java structure. You can open it in any standard IDE (IntelliJ IDEA, Eclipse, VS Code) or compile it via CLI.
 
-* Multiple Processing Strategies – Optimized for different query and data collection frequencies.
-* Data Cleaning – Removes invalid entries, dates, and sensor errors.
-* Data Parsing – Converts string-based sensor data into sorted temperature and humidity lists.
-* Extensible Design – New processing strategies can be added easily via subclassing.
-* Unit Tests – Examples.java verifies correctness, performance, and edge cases.
+## Usage
+Instantiate one of the processor classes depending on your system's performance needs, and feed it strings of sensor data:
 
-## Class Structure
+```java
+THSensible processor = new THBP(); // or new THRTP()
+processor.collect("20250407 T 73.0 H 26.5");
 
-* THSensible – Interface defining public methods for sensor data operations.
-* THTemplate – Abstract class implementing most logic (collecting, cleaning, parsing, querying).
-* THBP – Batch processing implementation.
-* THRTP – Real-time processing implementation.
-* THBPAuditor – Batch processor with error auditing.
-* THRTPDate – Real-time processor restricted to a specific date.
-* Examples.java – JUnit test cases for all classes.
+// Query the data
+double maxTemp = processor.maxTemp();
+```
 
-## Data Format
-
-Sensor data strings follow the format:
-yyyymmdd value1 value2 ...
-Where:
-
-* value can be:
-
-  * Temperature in Fahrenheit (100.0 – 200.0)
-  * Humidity percentage (0.0% – 100.0%)
-  * "error" to indicate sensor malfunction
-
-Example:
-20250409 101.5 78.3% error
-
-## Requirements
-
-* Java JDK 17 or later
-* Recommended IDE: IntelliJ IDEA (Eclipse and VSCode also supported)
-
-## Installation & Usage
-
-1. Clone the repository:
-   git clone [https://github.com/your-username/greenhouse-sensor-project.git](https://github.com/your-username/greenhouse-sensor-project.git)
-   cd greenhouse-sensor-project
-2. Open the project in your preferred Java IDE.
-3. Run Examples.java to verify functionality.
-
-## Testing
-
-Run all unit tests in Examples.java to ensure:
-
-* All processing strategies function correctly.
-* Data cleaning and parsing logic works as intended.
-* Performance differences between batch and real-time modes are measurable.
-
-## License
-
-This project is licensed under the MIT License (LICENSE).
+## Project Structure
+```text
+├── src/
+│   ├── main/java/greenhouse/       # Core application logic and interfaces
+│   └── test/java/greenhouse/       # Unit tests (Examples.java)
+├── docs/                           # Extended documentation
+├── LICENSE
+├── reqs.txt                        # Project requirements
+└── README.md
+```

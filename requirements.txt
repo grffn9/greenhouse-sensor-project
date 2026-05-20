@@ -1,0 +1,4 @@
+# Since this is a Java project, standard Python requirements don't map directly.
+# However, you could list tools or dependencies here.
+# JDK >= 11
+# JUnit (for Examples.java tests)
